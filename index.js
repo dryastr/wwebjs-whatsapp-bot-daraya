@@ -1,6 +1,5 @@
 const { Client, MessageMedia, LocalAuth } = require('whatsapp-web.js');
-const qrcode = require('qrcode');
-const express = require('express');
+const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 const path = require('path');
 
@@ -14,21 +13,12 @@ const client = new Client({
     authStrategy: new LocalAuth()
 });
 
-const app = express();
 
 // Endpoint untuk menyajikan gambar QR code dihapus
 
-client.on('qr', async (qr) => {
-    try {
-        // Tampilkan QR code sebagai URL di console
-        const qrCodeDataUrl = await qrcode.toDataURL(qr);
-        console.log('QR Code URL:', qrCodeDataUrl);
-        // Atau tampilkan QR code di terminal dengan format text (bisa juga diubah sesuai kebutuhan)
-        const qrCodeText = await qrcode.toString(qr, { type: 'terminal' });
-        console.log('QR Code Text:\n', qrCodeText);
-    } catch (err) {
-        console.error('Error generating QR code:', err);
-    }
+client.on('qr', (qr) => {
+    qrcode.generate(qr, { small: true });
+    console.log('Scan QR code di atas dengan aplikasi WhatsApp Anda.');
 });
 
 client.on('ready', () => {
@@ -172,12 +162,6 @@ Terima kasih atas perhatian dan kerja sama Anda.
             console.error('Error saat mengirim pesan format tugas:', error);
         }
     }
-});
-
-// Jalankan server Express
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server berjalan di http://localhost:${PORT}`);
 });
 
 client.initialize();
