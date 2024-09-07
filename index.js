@@ -1,4 +1,4 @@
-const { Client, MessageMedia } = require('whatsapp-web.js');
+const { Client, MessageMedia, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode');
 const express = require('express');
 const fs = require('fs');
@@ -9,8 +9,10 @@ const lastWelcomeTime = new Map();
 const imageUrl = 'https://daraya.id/storage/images/UKWoWnxKg26JHHQ4HSpm82jTKfgo7X0n1yQh8XrC.png';
 const WELCOME_INTERVAL = 24 * 60 * 60 * 1000; // 24 jam dalam milidetik
 
-// Inisialisasi client tanpa LocalAuth
-const client = new Client();
+// Inisialisasi client dengan LocalAuth
+const client = new Client({
+    authStrategy: new LocalAuth()
+});
 
 const app = express();
 
@@ -26,7 +28,6 @@ app.get('/qrcode', (req, res) => {
     });
 });
 
-// Start WhatsApp client
 client.on('qr', (qr) => {
     // QR code akan dikirim ke browser melalui endpoint '/qrcode'
 });
