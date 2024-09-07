@@ -16,20 +16,19 @@ const client = new Client({
 
 const app = express();
 
-// Endpoint untuk menyajikan gambar QR code
-app.get('/qrcode', (req, res) => {
-    client.on('qr', async (qr) => {
-        try {
-            const qrCodeDataUrl = await qrcode.toDataURL(qr);
-            res.send(`<img src="${qrCodeDataUrl}" alt="QR Code"/>`);
-        } catch (err) {
-            res.status(500).send('Error generating QR code');
-        }
-    });
-});
+// Endpoint untuk menyajikan gambar QR code dihapus
 
-client.on('qr', (qr) => {
-    // QR code akan dikirim ke browser melalui endpoint '/qrcode'
+client.on('qr', async (qr) => {
+    try {
+        // Tampilkan QR code sebagai URL di console
+        const qrCodeDataUrl = await qrcode.toDataURL(qr);
+        console.log('QR Code URL:', qrCodeDataUrl);
+        // Atau tampilkan QR code di terminal dengan format text (bisa juga diubah sesuai kebutuhan)
+        const qrCodeText = await qrcode.toString(qr, { type: 'terminal' });
+        console.log('QR Code Text:\n', qrCodeText);
+    } catch (err) {
+        console.error('Error generating QR code:', err);
+    }
 });
 
 client.on('ready', () => {
